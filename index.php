@@ -17,7 +17,7 @@ if($metodo === 'POST') {
 
     if($usuario === '' || $contraseña === '') { 
         $error = 'Asegurese de escribir su nombre y contraseña'; 
-        ?> <script> alert("Nombre obligatorio") </script> <?php
+        ?> <script> alert("Nombre o contraseña obligatorios") </script> <?php
         
     } else {
         $_SESSION['usuario'] = $usuario; 
@@ -38,7 +38,7 @@ if($metodo === 'POST') {
     <link rel="icon" type="image/png" href="includes/logo.png">
 </head>
 <body>
-    <h2>Inicia Sesión</h2>
+    <h2>Iniciar Sesión</h2>
 
     <form method="post" action="">
         <label for="usuario">Usuario: </label>
