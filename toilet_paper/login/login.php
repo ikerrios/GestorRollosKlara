@@ -5,8 +5,8 @@ require_once '../config/database.php';
 $mensaje = '';
 
 if ($_POST) {
-    $email = trim($_POST['email'] ?? '');
-    $pass  = $_POST['password'] ?? '';
+    $email  = trim($_POST['email'] ?? '');
+    $pass   = $_POST['password'] ?? '';
     $accion = $_POST['accion'] ?? '';
 
     // ====== REGISTRO ======
@@ -35,12 +35,10 @@ if ($_POST) {
         $user = $stmt->fetch();
 
         if ($user && password_verify($pass, $user['password'])) {
-            // Guardamos sesión
             $_SESSION['usuario_id'] = $user['id'];
             $_SESSION['nombre']     = $user['nombre'];
             $_SESSION['es_admin']   = $user['es_admin'];
 
-            
             if ($user['es_admin'] === 1) {
                 header("Location: ../admin/panel.php");
                 exit();
@@ -54,65 +52,99 @@ if ($_POST) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Papel Manager</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .float { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-    </style>
+    <link rel="stylesheet" href="login.css">
 </head>
-<body class="bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 min-h-screen flex items-center justify-center">
+<body class="body-login">
 
-<div class="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-10 w-full max-w-md">
-    <div class="text-center mb-8">
-        <div class="text-8xl float inline-block">Rollos</div>
-        <h1 class="text-4xl font-bold text-purple-700 mt-4">Papel Manager</h1>
-        <p class="text-gray-600">Control de rollos higiénicos</p>
+<div class="login-card">
+    <div class="login-header">
+        <div class="logo-rollos float-animation">Rollos</div>
+        <h1 class="app-title">Papel Manager</h1>
+        <p class="subtitle">Control de rollos higiénicos</p>
     </div>
 
     <?php if ($mensaje): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-center">
-            <?= $mensaje ?>
+        <div class="error-message">
+            <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') ?>
         </div>
     <?php endif; ?>
 
     <!-- LOGIN -->
-    <form method="POST" class="space-y-6">
+    <form method="POST" class="login-form">
         <input type="hidden" name="accion" value="login">
-        <input type="email" name="email" placeholder="Email" required class="w-full px-6 py-4 rounded-xl border-2 border-purple-300 focus:border-purple-600 outline-none text-lg">
-        <input type="password" name="password" placeholder="Contraseña" required class="w-full px-6 py-4 rounded-xl border-2 border-purple-300 focus:border-purple-600 outline-none text-lg">
-        <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 rounded-xl text-xl hover:scale-105 transition">
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            class="input-field"
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            required
+            class="input-field"
+        >
+
+        <button type="submit" class="btn btn-primary">
             Entrar
         </button>
     </form>
 
-    <div class="mt-8 text-center">
-        <p class="text-gray-600">¿No tienes cuenta?</p>
-        <button onclick="document.getElementById('registro').classList.toggle('hidden')" class="text-purple-600 font-bold">
+    <div class="register-toggle">
+        <p class="no-account-text">¿No tienes cuenta?</p>
+        <button
+            type="button"
+            onclick="document.getElementById('registro').classList.toggle('hidden')"
+            class="btn-link"
+        >
             Regístrate (+150 puntos)
         </button>
     </div>
 
     <!-- REGISTRO -->
-    <form method="POST" id="registro" class="hidden mt-8 space-y-6">
+    <form method="POST" id="registro" class="register-form hidden">
         <input type="hidden" name="accion" value="registro">
-        <input type="text" name="nombre" placeholder="Nombre" required class="w-full px-6 py-4 rounded-xl border-2">
-        <input type="email" name="email" placeholder="Email" required class="w-full px-6 py-4 rounded-xl border-2">
-        <input type="password" name="password" placeholder="Contraseña" required class="w-full px-6 py-4 rounded-xl border-2">
-        <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-4 rounded-xl text-xl hover:scale-105 transition">
+
+        <input
+            type="text"
+            name="nombre"
+            placeholder="Nombre"
+            required
+            class="input-field"
+        >
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            class="input-field"
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            required
+            class="input-field"
+        >
+
+        <button type="submit" class="btn btn-secondary">
             Crear cuenta
         </button>
     </form>
 
-    <p class="text-center text-xs text-gray-500 mt-8">
+    <p class="admin-info">
         Admin → admin@admin.com | 1234
     </p>
 </div>

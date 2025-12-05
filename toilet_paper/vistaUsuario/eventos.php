@@ -14,10 +14,8 @@ $stmt = $pdo->prepare("SELECT puntos FROM usuarios WHERE id = ?");
 $stmt->execute([$id]);
 $puntos = $stmt->fetchColumn();
 
-// Obtener eventos
 $eventos = $pdo->query("SELECT * FROM eventos_diarios ORDER BY puntos DESC")->fetchAll();
 
-// Comprobar cuáles ya hizo hoy
 $hechos = [];
 $stmt = $pdo->prepare("SELECT evento_id FROM eventos_completados WHERE usuario_id = ? AND fecha = ?");
 $stmt->execute([$id, $hoy]);
@@ -25,7 +23,6 @@ while ($row = $stmt->fetchColumn()) {
     $hechos[$row] = true;
 }
 
-// Procesar evento completado
 $mensaje = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['evento_id'])) {
     $evento_id = (int)$_POST['evento_id'];
@@ -47,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['evento_id'])) {
                  ->execute([$id, $e['puntos']]);
             $pdo->commit();
 
-            $mensaje = "<div class='bg-gradient-to-r from-green-500 to-emerald-600 text-white p-8 rounded-3xl text-4xl font-black text-center shadow-2xl animate-pulse'>
+            $mensaje = "<div class='mensaje-evento-ok'>
                           ¡+{$e['puntos']} puntos por “{$e['titulo']}”!
-                          </div>";
+                        </div>";
             $puntos += $e['puntos'];
             $hechos[$evento_id] = true;
         }
@@ -63,82 +60,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['evento_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eventos Diarios | Papel Manager</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .evento:hover { transform: translateY(-15px) scale(1.05); }
-        .check { animation: check 0.6s ease-out; }
-        @keyframes check { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-    </style>
+    <link rel="stylesheet" href="vistaUsuario.css">
 </head>
-<body class="bg-gradient-to-br from-teal-50 via-cyan-50 to-green-50 min-h-screen pt-20 pb-32">
+<body class="bg-eventos">
 
-<div class="max-w-5xl mx-auto px-6 text-center">
+<div class="contenedor-eventos">
 
-    <a href="dashboard.php" class="inline-block mb-8 text-purple-700 font-bold text-xl hover:underline">← Volver al dashboard</a>
+    <a href="dashboard.php" class="link-volver">← Volver al dashboard</a>
 
-    <h1 class="text-7xl font-black bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-6">
+    <h1 class="titulo-eventos">
         Eventos del Día
     </h1>
-    <p class="text-3xl text-gray-700 mb-12">¡Gana puntos fáciles todos los días!</p>
+    <p class="subtitulo-eventos">¡Gana puntos fáciles todos los días!</p>
 
-    <?= $mensaje ?>
+    <?php if ($mensaje): ?>
+        <?= $mensaje ?>
+    <?php endif; ?>
 
-    <div class="text-6xl font-black text-purple-600 mb-12">
+    <div class="puntos-actuales">
         Puntos actuales: <?= $puntos ?>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-
+    <div class="grid-eventos">
         <?php foreach ($eventos as $e): 
             $completado = isset($hechos[$e['id']]);
         ?>
-        <div class="evento bg-white rounded-3xl shadow-2xl p-10 transition duration-500 <?= $completado ? 'opacity-70' : '' ?>">
-            <div class="flex justify-between items-start mb-8">
-                <h3 class="text-4xl font-black text-gray-800 text-left">
+        <div class="card-evento <?= $completado ? 'evento-completado' : '' ?>">
+            <div class="cabecera-evento">
+                <h3 class="titulo-card-evento">
                     <?= htmlspecialchars($e['titulo']) ?>
                 </h3>
-                <div class="text-7xl font-black <?= $completado ? 'text-gray-400' : 'text-green-600' ?>">
+                <div class="puntos-card-evento <?= $completado ? 'puntos-gris' : 'puntos-verde' ?>">
                     +<?= $e['puntos'] ?> pts
                 </div>
             </div>
 
-            <p class="text-2xl text-gray-700 mb-10 text-left leading-relaxed">
+            <p class="descripcion-evento">
                 <?= nl2br(htmlspecialchars($e['descripcion'])) ?>
             </p>
 
             <?php if ($completado): ?>
-                <div class="text-6xl text-center text-green-500 check">Check</div>
-                <p class="text-2xl text-gray-600 mt-4">Completado hoy</p>
+                <div class="evento-check">Check</div>
+                <p class="evento-completado-texto">Completado hoy</p>
             <?php else: ?>
                 <form method="POST">
                     <input type="hidden" name="evento_id" value="<?= $e['id'] ?>">
-                    <button class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-6 rounded-2xl text-3xl font-black hover:scale-110 transition shadow-2xl">
+                    <button class="btn-evento-completar">
                         ¡Lo hice! DAME PUNTOS
                     </button>
                 </form>
             <?php endif; ?>
         </div>
         <?php endforeach; ?>
-
     </div>
 
-    <a href="tienda.php" class="inline-block mt-16 text-3xl text-purple-600 font-bold hover:underline">
+    <a href="tienda.php" class="link-tienda">
         Ir a la tienda a gastar puntos
     </a>
 </div>
 
-<!-- Barra inferior -->
-<div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-purple-800 via-pink-700 to-purple-900 text-white py-6 shadow-2xl">
-    <div class="max-w-5xl mx-auto grid grid-cols-3 text-center">
-        <div><p class="text-xl">Rollos</p><p class="text-6xl font-black">
+<div class="barra-inferior">
+    <div class="barra-item">
+        <p class="barra-label">Rollos</p>
+        <p class="barra-valor">
             <?= $pdo->query("SELECT rollos_actuales FROM usuarios WHERE id=$id")->fetchColumn() ?>
-        </p></div>
-        <div><p class="text-xl">Días</p><p class="text-6xl font-black">
+        </p>
+    </div>
+    <div class="barra-item">
+        <p class="barra-label">Días</p>
+        <p class="barra-valor">
             <?= intval($pdo->query("SELECT rollos_actuales FROM usuarios WHERE id=$id")->fetchColumn() / 0.5) ?>
-        </p></div>
-        <div><p class="text-xl">Puntos</p><p class="text-6xl font-black"><?= $puntos ?></p></div>
+        </p>
+    </div>
+    <div class="barra-item">
+        <p class="barra-label">Puntos</p>
+        <p class="barra-valor"><?= $puntos ?></p>
     </div>
 </div>
 

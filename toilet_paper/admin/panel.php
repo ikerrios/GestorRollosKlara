@@ -6,7 +6,26 @@ if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_id'] != 4 && !$_SESSI
     header("Location: ../login/login.php");
     exit();
 }
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
 
-echo '<h1 style="text-align:center; margin-top:100px; font-size:80px; color:#00ff00;">ADMIN FUNCIONANDO PERFECTO</h1>';
-echo '<p style="text-align:center; font-size:30px;">ID: '.$_SESSION['usuario_id'].' | '.$_SESSION['nombre'].'</p>';
-echo '<a href="../vistaUsuario/dashboard.php" style="display:block; text-align:center; margin-top:50px; font-size:25px; color:#a855f7;">Ir al Dashboard</a>';
+    <h1 class="admin-title">ADMIN</h1>
+
+    <p class="admin-info">
+        ID: <?= $_SESSION['usuario_id'] ?> | <?= htmlspecialchars($_SESSION['nombre']) ?>
+    </p>
+
+    <a href="../vistaUsuario/dashboard.php" class="admin-link">
+        Ir al Dashboard
+    </a>
+
+</body>
+</html>
