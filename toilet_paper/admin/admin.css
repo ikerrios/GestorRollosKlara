@@ -1,38 +1,237 @@
-body {
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: #0a0a0a;
-    color: #ffffff;
+}
+
+.admin-body {
     min-height: 100vh;
+    background: #000000;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.admin-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 120px 20px;
+}
+
+/* HEADER */
+
+.admin-header {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 30px;
 }
 
 .admin-title {
-    font-size: 80px;
-    color: #00ff00;
-    text-align: center;
-    margin-bottom: 20px;
+    font-size: 64px;
+    font-weight: 900;
+    color: #22c55e; /* verde fosforito */
 }
 
-.admin-info {
-    font-size: 30px;
-    text-align: center;
-    margin-bottom: 40px;
-    color: #dddddd;
+.admin-subtitle {
+    font-size: 18px;
+    margin-top: 6px;
+    color: #e5e7eb;
 }
 
 .admin-link {
-    font-size: 25px;
+    font-size: 18px;
     color: #a855f7;
     text-decoration: none;
-    text-align: center;
+    font-weight: 600;
 }
 
 .admin-link:hover {
     text-decoration: underline;
-    color: #c084fc;
+}
+
+/* MENSAJE */
+
+.admin-message {
+    background: #111827;
+    border-left: 5px solid #22c55e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* SECCIONES */
+
+.admin-section {
+    margin-top: 30px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+/* STATS */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.stat-card {
+    background: #020617;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.stat-value {
+    margin-top: 6px;
+    font-size: 28px;
+    font-weight: 900;
+    color: #22c55e;
+}
+
+/* ACCIONES RÁPIDAS */
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.action-card {
+    background: #020617;
+    border-radius: 14px;
+    padding: 18px 18px 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+.action-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.action-text {
+    font-size: 14px;
+    color: #e5e7eb;
+    margin-bottom: 12px;
+}
+
+.action-label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.action-input {
+    width: 100%;
+    margin-top: 4px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #4b5563;
+    background: #020617;
+    color: #e5e7eb;
+}
+
+/* BOTONES */
+
+.btn {
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 6px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-warning {
+    background: #f97316;
+    color: #111827;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.btn-save {
+    background: #22c55e;
+    color: #020617;
+    margin-top: 12px;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* TABLA EVENTOS */
+
+.eventos-form {
+    margin-top: 10px;
+}
+
+.eventos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.eventos-table th,
+.eventos-table td {
+    border: 1px solid #1f2937;
+    padding: 8px 10px;
+}
+
+.eventos-table th {
+    background: #111827;
+    text-align: left;
+}
+
+.event-input-title {
+    width: 100%;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #4b5563;
+    background: #020617;
+    color: #e5e7eb;
+}
+
+.event-input-points {
+    width: 80px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #4b5563;
+    background: #020617;
+    color: #e5e7eb;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .admin-title {
+        font-size: 40px;
+    }
+
+    .admin-container {
+        padding: 20px 12px 100px;
+    }
 }

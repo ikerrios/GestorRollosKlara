@@ -28,28 +28,45 @@ if ($_POST) {
         }
     }
 
-    // ====== LOGIN ======
-    if ($accion == 'login') {
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
 
-        if ($user && password_verify($pass, $user['password'])) {
+    // ====== LOGIN ======
+if ($accion == 'login') {
+    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if ($user) {
+        $esAdmin = (int)$user['es_admin'] === 1;
+
+        // Para usuarios normales: SOLO password_verify
+        // Para admin: acepta tanto hash como texto plano (1234 en la BD)
+        if ($esAdmin) {
+            $passwordOk =
+                password_verify($pass, $user['password'])   // si está hasheada
+                || $pass === $user['password'];             // si está en texto plano
+        } else {
+            $passwordOk = password_verify($pass, $user['password']);
+        }
+
+        if ($passwordOk) {
             $_SESSION['usuario_id'] = $user['id'];
             $_SESSION['nombre']     = $user['nombre'];
-            $_SESSION['es_admin']   = $user['es_admin'];
+            $_SESSION['es_admin']   = (int)$user['es_admin'];
 
-            if ($user['es_admin'] === 1) {
+            if ($esAdmin) {
                 header("Location: ../admin/panel.php");
                 exit();
-            } else {
-                header("Location: ../vistaUsuario/dashboard.php");
-                exit();
             }
-        } else {
-            $mensaje = "Email o contraseña incorrectos";
+
+            header("Location: ../vistaUsuario/dashboard.php");
+            exit();
         }
     }
+
+    // Si ha llegado hasta aquí, algo ha fallado
+    $mensaje = "Email o contraseña incorrectos";
+}
+
 }
 ?>
 <!DOCTYPE html>
